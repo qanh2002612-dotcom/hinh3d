@@ -45,7 +45,7 @@
       color: "lightblue"
     }));
 
-    // Khung nâu
+    // ===== Khung nâu =====
     let frame_thickness = 2, frame_height = 1;
     let B_outer = [
       [-base_big/2-frame_thickness, -base_big/2-frame_thickness, 0],
@@ -72,6 +72,36 @@
       color: "saddlebrown"
     }));
 
+    // ===== Bóng đèn vàng (hình cầu) =====
+    function createSphere(cx, cy, cz, r, steps=20) {
+      let x = [], y = [], z = [];
+      for (let i = 0; i <= steps; i++) {
+        let theta = i * Math.PI / steps;
+        let rowX = [], rowY = [], rowZ = [];
+        for (let j = 0; j <= steps; j++) {
+          let phi = j * 2 * Math.PI / steps;
+          rowX.push(cx + r * Math.sin(theta) * Math.cos(phi));
+          rowY.push(cy + r * Math.sin(theta) * Math.sin(phi));
+          rowZ.push(cz + r * Math.cos(theta));
+        }
+        x.push(rowX); y.push(rowY); z.push(rowZ);
+      }
+      return {x, y, z};
+    }
+
+    let bulb = createSphere(0, 0, frame_height + 3, 3, 30);
+
+    lampData.push({
+      type: "surface",
+      x: bulb.x,
+      y: bulb.y,
+      z: bulb.z,
+      showscale: false,
+      opacity: 0.9,
+      colorscale: [[0,"gold"],[1,"gold"]]
+    });
+
+    // Vẽ
     Plotly.newPlot("lamp", lampData, {
       scene: {aspectmode: "data"},
       margin: {l:0,r:0,t:0,b:0}
