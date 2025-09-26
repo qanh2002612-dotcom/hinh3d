@@ -41,7 +41,7 @@
       x: f.map(p => p[0]),
       y: f.map(p => p[1]),
       z: f.map(p => p[2]),
-      opacity: 0.5,    // giảm để nhìn xuyên thấy bóng đèn
+      opacity: 0.5,   // trong suốt để nhìn thấy bóng đèn
       color: "lightblue"
     }));
 
@@ -72,51 +72,21 @@
       color: "saddlebrown"
     }));
 
-    // ===== Bóng đèn vàng (mesh3d sphere) =====
-    function createSphere(cx, cy, cz, r, steps=15) {
-      let vertices = [];
-      let i, j;
-      for (i = 0; i <= steps; i++) {
-        let theta = i * Math.PI / steps;
-        for (j = 0; j <= steps; j++) {
-          let phi = j * 2 * Math.PI / steps;
-          let x = cx + r * Math.sin(theta) * Math.cos(phi);
-          let y = cy + r * Math.sin(theta) * Math.sin(phi);
-          let z = cz + r * Math.cos(theta);
-          vertices.push([x,y,z]);
-        }
+    // ===== Bóng đèn vàng (scatter3d dạng cầu) =====
+    let cx=0, cy=0, cz=5, r=3;
+    let x=[], y=[], z=[];
+    for (let theta=0; theta<=Math.PI; theta+=Math.PI/20) {
+      for (let phi=0; phi<=2*Math.PI; phi+=Math.PI/20) {
+        x.push(cx + r*Math.sin(theta)*Math.cos(phi));
+        y.push(cy + r*Math.sin(theta)*Math.sin(phi));
+        z.push(cz + r*Math.cos(theta));
       }
-      let x = vertices.map(v=>v[0]);
-      let y = vertices.map(v=>v[1]);
-      let z = vertices.map(v=>v[2]);
-      let iArr=[], jArr=[], kArr=[];
-      let cols = steps+1;
-      for (i = 0; i < steps; i++) {
-        for (j = 0; j < steps; j++) {
-          let a = i*cols+j;
-          let b = a+1;
-          let c = a+cols;
-          let d = c+1;
-          iArr.push(a, a, b, b);
-          jArr.push(c, d, c, d);
-          kArr.push(b, c, d, a);
-        }
-      }
-      return {x,y,z,i:iArr,j:jArr,k:kArr};
     }
-
-    let bulb = createSphere(0, 0, frame_height+5, 3, 20);
-
     lampData.push({
-      type: "mesh3d",
-      x: bulb.x,
-      y: bulb.y,
-      z: bulb.z,
-      i: bulb.i,
-      j: bulb.j,
-      k: bulb.k,
-      color: "gold",
-      opacity: 1
+      type: "scatter3d",
+      mode: "markers",
+      x: x, y: y, z: z,
+      marker: {size: 2, color: "gold", opacity: 0.9}
     });
 
     // Vẽ
